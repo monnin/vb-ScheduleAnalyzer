@@ -1,0 +1,17 @@
+Version 0.08   January, 2015
+	* First version with release notes
+	* Fixed issue with resizing the main window and the "Find Schedules" button not moving correctly
+	* Partial Feature: Allow/Checkfor Sequences to have criteria (e.g. "format=online") [does not load in sequences when checking all options]
+	* Add option to verify course matches contact hour requirements (on by default in Settings, HY courses exempt)
+	* Check for for "GHOST" sections (listed in Notes column).   Ghosts are checked for room/teacher conflicts, but do not satisfy sequence requirements
+
+Version 0.09   February, 2015
+	* Merge all room and instructor TBA's into a max of two warnings
+	* In "Find Schedules", allow for criteria to be loaded for pre-defined schedules
+	* Add the ability to identify two sections as the same ("co-listed") by having the coursenum of one in the notes of the other
+	* Upgraded several types of issues (e.g. start_time > end_time) to "Error" instead of "Warning"
+	* In main window,  color coded Severity column, and sort by severity by default
+
+ 
+ Version 0.10 March, 2015
+	* Create an option to allow GHOSTed sections to satisfy sequence requirements

@@ -1,0 +1,281 @@
+﻿
+    '
+    '   Used by the defunct FindFreeRoom page (code not tested)
+    '   
+    '   TODO:  Fix or remove
+    '
+    Public Function FindRoom(days As String, starttime As String, endtime As String, _
+                             ByVal minroomsize As Integer, ByVal defaultRoomSize As Integer, _
+                             ByRef desiredCapabilities As HashSet(Of String), _
+                             ByVal matchAllCapabilities As Boolean) As String
+        Dim result As String = ""
+        Dim i As Integer
+        Dim h As New Dictionary(Of String, Integer)
+        Dim room As String
+        Dim myDays As Integer
+        Dim myStart As Integer
+        Dim myEnd As Integer
+        Dim iserror As Boolean = False
+        Dim roomOk As Boolean
+        Dim roomData As oneRoom = Nothing
+        Dim size As Integer
+
+        '
+        '   Blank times = take the opening and closing of the school
+        '
+        If (starttime.Trim = "") Then
+            myStart = earliestStartOfClass
+        Else
+            myStart = timeToInt(starttime)
+        End If
+
+        If (endtime.Trim = "") Then
+            myEnd = latestEndOfClass
+        Else
+            myEnd = timeToInt(endtime)
+        End If
+
+
+        '
+        '   Blank days = don't care which day (take all days the school is open)
+        '
+        If (days.Trim = "") Then
+            myDays = alldays          ' All days the school is open
+        Else
+            myDays = daysToBitmask(days)
+        End If
+
+        If (myDays = 0) Then
+            result = result & "Could not understand the days (should be words such as mon/tue/wed/thur/fri/sat/sun)" & vbCrLf
+            iserror = True
+        End If
+
+        If (myStart = -1) Then
+            result = result & "Could not understand the start time" & vbCrLf
+            iserror = True
+        End If
+
+
+        If (myEnd = -1) Then
+            result = result & "Could not understand the end time" & vbCrLf
+            iserror = True
+        End If
+
+        If (Not iserror) Then
+
+            '
+            '   Start with a list of all of the rooms (and assume they are all available)
+            '
+            For i = 0 To numSections - 1
+                room = allSections(i).room
+
+                '
+                '   Is this really a room?
+                '
+                If ((room <> "") And (allSections(i).starttime > -1) And _
+                                     (allSections(i).endtime > -1)) Then
+
+                    roomOk = roomHasNeededCapabilities(room, desiredCapabilities, matchAllCapabilities)
+
+                    If (roomOk) Then
+                        size = roomSize(room, defaultRoomSize)
+
+                        If ((minroomsize > 0) And (size < minroomsize)) Then
+                            roomOk = False
+                        End If
+                    End If
+
+                    '
+                    '  Mark it as a room
+                    '
+                    If (roomOk AndAlso (Not h.ContainsKey(room))) Then
+                        h(room) = 1
+                    End If
+
+                End If
+            Next
+
+            '
+            '  Start ruling out rooms
+            '
+            For i = 0 To numSections - 1
+                '
+                '  See if the days overlaps
+                '
+                If (daysOverlap(myDays, allSections(i).days)) Then
+                    '
+                    '   See if the times overlap
+                    '
+                    If (timeOverlap(myStart, myEnd, allSections(i).starttime, _
+                                    allSections(i).endtime)) Then
+                        '
+                        '  Yes, then rule out this room - it's in use
+                        '
+                        h(allSections(i).room) = 0
+                    End If
+                End If
+            Next
+
+            '
+            '   See what rooms are still available
+            '
+            For Each room In h.Keys
+                If (h(room) > 0) Then
+                    result = result & room & " is available." & vbCrLf
+                End If
+            Next
+
+
+            If (result = "") Then
+                result = "Sorry, no rooms were found to be free then"
+            End If
+        End If
+
+
+        Return result
+    End Function
+
+
+
+
+	
+    Private Function OLDfindFreeTimeSingleRoom(room As String, duration As Integer, _
+                                classCount As Integer, _
+                                starttime As Integer, endtime As Integer, _
+                                days As Integer, _
+                                ByVal quiet As Boolean) As String
+        Dim result As String = ""
+        Dim matched(numSections) As Integer
+        Dim numMatched As Integer = 0
+        Dim startFree As Integer
+        Dim endFree As Integer
+        Dim i As Integer
+        Dim day As Integer
+        Dim foundAny As Boolean = False         ' Did we match any line at all?
+
+        room = room.ToUpper
+
+
+        For i = 0 To numSections - 1
+            '
+            '  Find all uses of the room in the desired time slice
+            '
+            If (allSections(i).room.ToUpper = room) Then
+
+                foundAny = True
+
+                If (daysOverlap(allSections(i).days, days) And _
+                timeOverlap(allSections(i).starttime, allSections(i).endtime, _
+                            starttime, endtime)) Then
+
+                    matched(numMatched) = i
+                    numMatched = numMatched + 1
+
+                End If
+            End If
+
+        Next
+
+        '
+        '   We now have a list of all classes during that time
+        '    so find out when the first one meets
+        '
+
+        day = 1
+        While (day <= 64)
+
+            '
+            '  Assume all day free
+            '
+            startFree = starttime
+            endFree = endtime
+
+            While ((startFree < endtime) And (endFree <= endtime))
+                '
+                '  Look for the first free block
+                '
+                i = 0
+
+                '
+                '  Start the next class that would get in the way of a new class
+                '
+                While (i < numMatched)
+                    If ((daysOverlap(day, allSections(matched(i)).days)) AndAlso
+                        (timeOverlap(allSections(matched(i)).starttime, _
+                                    allSections(matched(i)).endtime, _
+                                    startFree, startFree + duration))) Then
+                        startFree = allSections(matched(i)).endtime
+
+                        ' We found a course that overlaps, reset the search so that if
+                        '  a second course also overlaps we continue with the overlapping from the
+                        '  latest point of view
+                        i = 0
+                    Else
+                        i = i + 1
+                    End If
+                End While
+
+                '
+                '  Ok, we now have a start of a free block.  That - or we are at the end of the day
+                '
+                '  Find the next "in use" block that is used
+                '
+                endFree = endtime
+
+                For i = 0 To numMatched - 1
+                    If ((daysOverlap(day, allSections(matched(i)).days)) AndAlso _
+                        (allSections(matched(i)).starttime < endFree) AndAlso
+                        (allSections(matched(i)).starttime > startFree)) Then
+                        endFree = allSections(matched(i)).starttime
+                    End If
+                Next
+
+                '
+                '  Is there a free block at all?
+                '
+                If ((startFree < endtime) And (endFree <= endtime)) Then
+                    '
+                    '  Is the slot big enough?
+                    '
+
+                    If ((endFree - startFree) >= duration) Then
+                        result = result & room & " is available " & dayBitmaskToStr(day, 1) & " " & _
+                                 TimeIntToStr(startFree) & " until " & TimeIntToStr(endFree) & _
+                                 vbCrLf
+                    End If
+
+                    startFree = endFree  ' Start looking for the next busy block
+                End If
+
+
+            End While
+
+            day = day * 2 ' Now work on the next day
+
+            '
+            '  Ignore any days we aren't interested in
+            '
+            While ((day <= 64) And (Not daysOverlap(days, day)))
+
+                day = day * 2 ' Now work on the next day
+            End While
+
+
+        End While
+
+        '
+        '  Did the user enter a room not listed in the spreadsheet?
+        '
+        If (Not quiet) Then
+            If (foundAny = False) Then
+                result = "*** There was no use of room """ & room & """ in the spreadsheet at all!"
+            End If
+
+            If (result = "") Then
+                result = "No free times found for " & room
+            End If
+        End If
+
+        Return result
+    End Function
+

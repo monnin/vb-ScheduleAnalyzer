@@ -1,0 +1,84 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="FacultyLimit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="ShowTimes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UseOpenFile" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ScheduleTab" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Courses|YCCC</Value>
+    </Setting>
+    <Setting Name="SequenceTab" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Sequences</Value>
+    </Setting>
+    <Setting Name="ShowSequenceWarnings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="capabilitiesTab" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Rooms</Value>
+    </Setting>
+    <Setting Name="DefaultRoomSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="MaxCapacityColumn" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Max Capacity|Cap</Value>
+    </Setting>
+    <Setting Name="RoomCapabilityColumn" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Capabilities</Value>
+    </Setting>
+    <Setting Name="CourseNumColumn" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*course*number*|*number*course*</Value>
+    </Setting>
+    <Setting Name="InstructorCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*instructor*</Value>
+    </Setting>
+    <Setting Name="DaysCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*days*</Value>
+    </Setting>
+    <Setting Name="TimeCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*time*</Value>
+    </Setting>
+    <Setting Name="RoomCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">room</Value>
+    </Setting>
+    <Setting Name="MaxEnroll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Enr</Value>
+    </Setting>
+    <Setting Name="CurEnroll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cur</Value>
+    </Setting>
+    <Setting Name="EnrollTypeIsCurEnroll" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastFullSearchOption" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="lastSemestersChecked" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="roomDescription" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Description</Value>
+    </Setting>
+    <Setting Name="includeInfoResults" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="notesCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Notes</Value>
+    </Setting>
+    <Setting Name="contactHoursCol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Contact*|Credit*</Value>
+    </Setting>
+    <Setting Name="checkContactHours" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="allowGhosts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
